@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ESNext",
+    "types": [
+      "menu-drop",
+      "new-javascript",
+      "@stedit/num-text"
+    ],
+    "skipLibCheck": true,
+    "strict": true
+  }
+}

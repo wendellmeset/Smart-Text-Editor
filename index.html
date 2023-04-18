@@ -48,15 +48,15 @@
 <link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="./resources/startup-ipadpro2-portrait.png">
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cousine&family=Rubik&display=swap">
-<link rel="preload" as="fetch" crossorigin href="https://offroaders123.github.io/Num-Text-Component/vanilla-layout.css">
-<link rel="preload" as="fetch" crossorigin href="https://offroaders123.github.io/Num-Text-Component/vanilla-appearance.css">
-<link rel="preload" as="fetch" crossorigin href="https://offroaders123.github.io/Num-Text-Component/vanilla-highlighting.css">
-<script src="https://offroaders123.github.io/Num-Text-Component/script.js"></script>
+<link rel="preload" as="fetch" crossorigin href="https://cdn.jsdelivr.net/npm/@stedit/num-text/styles/vanilla-layout.css">
+<link rel="preload" as="fetch" crossorigin href="https://cdn.jsdelivr.net/npm/@stedit/num-text/styles/vanilla-appearance.css">
+<link rel="preload" as="fetch" crossorigin href="https://cdn.jsdelivr.net/npm/@stedit/num-text/styles/vanilla-highlighting.css">
+<script src="https://cdn.jsdelivr.net/npm/@stedit/num-text/dist/index.js"></script>
 <script src="https://offroaders123.github.io/Menu-Drop-Component/script.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js" data-manual></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-json.min.js"></script>
 
-<script src="./scripts/Editor.js"></script>
+<script src="./dist/STE.js"></script>
 
 <link rel="stylesheet" href="./styles/styles.css">
 
@@ -139,14 +139,14 @@
   <div class="app-icon">
     <img src="resources/icon.svg" alt="">
   </div>
-  <div class="app-menubar">
+  <div id="app_menubar" class="app-menubar">
     <menu-drop id="file_menu">
       <button>File</button>
       <ul>
-        <li onclick="createEditor({ auto_replace: false });" data-shortcuts='{ "default": "Ctrl+Shift+X", "macOS": "Shift+Cmd+X" }'>New Editor</li>
+        <li onclick="new Editor({ autoReplace: false });" data-shortcuts='{ "default": "Ctrl+Shift+X", "macOS": "Shift+Cmd+X" }'>New Editor</li>
         <li part="create-window-option" onclick="createWindow();" data-shortcuts='{ "default": "Ctrl+Shift+C", "macOS": "Shift+Cmd+C" }'>New Window</li>
         <li onclick="openFiles();" data-shortcuts='{ "default": "Ctrl+O", "macOS": "Cmd+O" }'>Open</li>
-        <li onclick="window.setTimeout(renameEditor,10);" data-shortcuts='{ "default": "Ctrl+Shift+R", "macOS": "Shift+Cmd+R" }'>Rename</li>
+        <li onclick="window.setTimeout(Editor.rename,10);" data-shortcuts='{ "default": "Ctrl+Shift+R", "macOS": "Shift+Cmd+R" }'>Rename</li>
         <li onclick="saveFile();" data-shortcuts='{ "default": "Ctrl+S", "macOS": "Cmd+S" }'>Save</li>
         <li>Save As...
           <ul>
@@ -171,9 +171,9 @@
     <menu-drop id="view_menu" data-select="no-appearance">
       <button>View</button>
       <ul>
-        <li data-selected onclick="setView({ type: 'code' });" data-shortcuts='{ "default": "Ctrl+Shift+1", "macOS": "Ctrl+Cmd+1" }' data-value="code">Code</li>
-        <li onclick="setView({ type: 'split' });" data-shortcuts='{ "default": "Ctrl+Shift+2", "macOS": "Ctrl+Cmd+2" }' data-value="split">Split</li>
-        <li onclick="setView({ type: 'preview' });" data-shortcuts='{ "default": "Ctrl+Shift+3", "macOS": "Ctrl+Cmd+3" }' data-value="preview">Preview</li>
+        <li data-selected onclick="setView('code');" data-shortcuts='{ "default": "Ctrl+Shift+1", "macOS": "Ctrl+Cmd+1" }' data-value="code">Code</li>
+        <li onclick="setView('split');" data-shortcuts='{ "default": "Ctrl+Shift+2", "macOS": "Ctrl+Cmd+2" }' data-value="split">Split</li>
+        <li onclick="setView('preview');" data-shortcuts='{ "default": "Ctrl+Shift+3", "macOS": "Ctrl+Cmd+3" }' data-value="preview">Preview</li>
         <li><hr></li>
         <li onclick="setOrientation();" data-shortcuts='{ "default": "Ctrl+Shift+4", "macOS": "Ctrl+Cmd+4" }' data-no-select>Orientation</li>
         <li onclick="createDisplay();" data-shortcuts='{ "default": "Ctrl+Shift+5", "macOS": "Ctrl+Cmd+5" }' data-no-select>Display</li>
@@ -198,8 +198,8 @@
         <li onclick="uuid_generator_card.open();" data-shortcuts='{ "default": "Ctrl+Shift+O", "macOS": "Shift+Cmd+O" }'>UUID Generator</li>
         <li>Insert Templates...
           <ul>
-            <li onclick="Tools.insertTemplate({ type: 'html' });" data-shortcuts='{ "default": "Ctrl+Shift+H", "macOS": "Shift+Cmd+H" }'>HTML</li>
-            <li onclick="Tools.insertTemplate({ type: 'pack-manifest-bedrock' });">Pack Manifest - Bedrock</li>
+            <li onclick="Tools.insertTemplate('html');" data-shortcuts='{ "default": "Ctrl+Shift+H", "macOS": "Shift+Cmd+H" }'>HTML</li>
+            <li onclick="Tools.insertTemplate('pack-manifest-bedrock');">Pack Manifest - Bedrock</li>
           </ul>
         </li>
         <li>Online Resources...
@@ -223,11 +223,11 @@
         <li part="install-option" onclick="showInstallPrompt();"><img src="resources/install.svg" alt="">Install</li>
         <li onclick="theme_card.open();"><img src="resources/template.svg" alt="">Theme Settings</li>
         <li part="clear-site-caches-option" onclick="clearSiteCaches();"><img src="resources/settings.svg" alt="">Clear Cache</li>
-        <li onclick="Editor.settings.reset({ confirm: true });"><img src="resources/settings.svg" alt="">Reset Settings</li>
+        <li onclick="STE.settings.reset({ confirm: true });"><img src="resources/settings.svg" alt="">Reset Settings</li>
       </ul>
     </menu-drop>
   </div>
-  <div class="app-omnibox">
+  <div id="app_omnibox" class="app-omnibox">
     <button id="install_option" class="option" title="Install" onclick="showInstallPrompt();"><svg><use href="#install_icon"/></svg></button>
     <button class="option" title="Refresh Preview" onclick="refreshPreview({ force: true });"><svg><use href="#refresh_icon"/></svg></button>
     <a class="option" href="https://github.com/Offroaders123/Smart-Text-Editor" title="Smart Text Editor on GitHub"><svg><use href="#github_icon"/></svg></a>
@@ -256,17 +256,17 @@
             <menu-drop id="default_orientation_setting" data-select>
               <button>Horizontal</button>
               <ul>
-                <li data-value="horizontal" onclick="Editor.settings.set('default-orientation','horizontal');" data-selected>Horizontal</li>
-                <li data-value="vertical" onclick="Editor.settings.set('default-orientation','vertical');">Vertical</li>
+                <li data-value="horizontal" onclick="STE.settings.set('default-orientation','horizontal');" data-selected>Horizontal</li>
+                <li data-value="vertical" onclick="STE.settings.set('default-orientation','vertical');">Vertical</li>
               </ul>
             </menu-drop>
           </div>
           <div class="checkbox">
-            <input id="syntax_highlighting_setting" type="checkbox" oninput="setSyntaxHighlighting(this.checked);">
+            <input id="syntax_highlighting_setting" type="checkbox" oninput="STE.appearance.setSyntaxHighlighting(this.checked);">
             <label for="syntax_highlighting_setting"><svg class="check"><use href="#check_icon"/></svg>Syntax Highlighting (Beta)</label>
           </div>
           <div class="checkbox">
-            <input id="automatic_refresh_setting" type="checkbox" oninput="Editor.settings.set('automatic-refresh',this.checked);" checked>
+            <input id="automatic_refresh_setting" type="checkbox" oninput="STE.settings.set('automatic-refresh',this.checked);" checked>
             <label for="automatic_refresh_setting"><svg class="check"><use href="#check_icon"/></svg>Automatically Refresh Preview</label>
           </div>
         </div>
@@ -277,7 +277,7 @@
       </div>
       <div class="options">
         <button id="clear_site_caches_button" class="warning" onclick="clearSiteCaches();">Clear Cache</button>
-        <button class="warning" onclick="Editor.settings.reset({ confirm: true });">Reset Settings</button>
+        <button class="warning" onclick="STE.settings.reset({ confirm: true });">Reset Settings</button>
       </div>
     </div>
   </ste-card>
@@ -437,7 +437,17 @@
   </ste-card>
 </main>
 
-<script src="./scripts/app.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.7.0/dist/es-module-shims.js"></script>
+
+<script type="importmap">
+  {
+    "imports": {
+      "nbtify": "https://cdn.jsdelivr.net/npm/nbtify@1.20.1/dist/index.js"
+    }
+  }
+</script>
+
+<script type="module" src="./dist/app.js"></script>
 
 </body>
 
